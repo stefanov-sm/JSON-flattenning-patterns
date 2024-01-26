@@ -4,8 +4,8 @@
 > Arrow syntax (`object->'attribute'`, `object->>'attribute'`) for versions prior to PG14 or as a matter of personal taste;  
 ```sql
 create table the_table (
- tt_id integer,
- tt_name text,
+ id integer,
+ name text,
  details jsonb
 );
 ```
@@ -17,8 +17,8 @@ values
 (2, 'two',   '{"x":102, "y":202, "z":true,  "more":{"weight":8.72}}'),
 (3, 'three', '{"x":103, "y":203, "more":{"created":"2024-01-20"}}');
 
-select tt_id, 
-       tt_name, 
+select id, 
+       name, 
        details['x']::numeric as length, 
        details['y']::numeric as width, 
        details['z']::boolean as is_available,
@@ -26,8 +26,8 @@ select tt_id,
        details['more']['created']::text::date as created
 from the_table;
 ```
-|tt_id|tt_name|length|width|is_available|weight|created   |
-|-----|-------|------|-----|------------|------|----------|
+|id|name|length|width|is_available|weight|created   |
+|--|----|------|-----|------------|------|----------|
 |    1|one    |   101|  201|false       |  23.5|2023-12-10|
 |    2|two    |   102|  202|true        |  8.72|          |
 |    3|three  |   103|  203|            |      |2024-01-20|  
@@ -48,8 +48,8 @@ values
 ```
 * **Using JSONB_ARRAY_ELEMENTS**
 ```sql
-select tt_id, 
-       tt_name, 
+select id, 
+       name, 
        jdata['x']::numeric as length, 
        jdata['y']::numeric as width,
        case when jdata['z'] is null then 'Do not count on it'
@@ -61,12 +61,12 @@ select tt_id,
 from the_table 
  cross join lateral jsonb_array_elements(details) as jdata
  left  join lateral jsonb_array_elements_text(jdata['more']['location_ids']) as l(loc) on true
-order by tt_id, weight nulls first;
+order by id, weight nulls first;
 ```
 * **Using JSONB_TO_RECORDSET**
 ```sql
-select tt_id, 
-       tt_name, 
+select id, 
+       name, 
        x as length, 
        y as width, 
        case when z is null then 'Do not count on it'
@@ -78,10 +78,10 @@ select tt_id,
 from the_table 
  cross join lateral jsonb_to_recordset(details) as (x numeric, y numeric, z boolean, more jsonb)
  left  join lateral jsonb_array_elements_text(more['location_ids']) as l(loc) on true
-order by tt_id, weight nulls first;
+order by id, weight nulls first;
 ```
   
-|tt_id|tt_name|length|width|available         |weight|created   |loc|
+|id|name|length|width|available         |weight|created   |loc|
 |-|-|-|-|-|-|-|-|
 |    1|one    |   103|  203|Do not count on it|      |2024-01-20|   |
 |    1|one    |   102|  202|Yes               |  8.72|          |   |

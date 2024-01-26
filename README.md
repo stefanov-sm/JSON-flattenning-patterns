@@ -1,7 +1,7 @@
 # PostgreSQL JSON flattenning
 ### JSONB [substripting](https://www.postgresql.org/docs/current/datatype-json.html#JSONB-SUBSCRIPTING) (PG14+) syntax ###  
 > [!NOTE]
-> Arrow syntax (`object->'attribute'`, `object->>'attribute'`) for versions prior to PG14 or as a matter of personal taste;  
+> Arrow syntax (`object->'attribute'`, `object->>'attribute'`) for versions prior to PG14 or as a matter of personal taste  
 ```sql
 create table the_table (
  id integer,
@@ -93,5 +93,5 @@ order by id, weight nulls first;
 |    2|two    |   111|  211|Yes               | 123.5|2023-12-11|   |
 
 > [!NOTE]
-> Verbose `cross join lateral` used for explicitness, can be [replaced by a single comma](https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-LATERAL). 
+> Verbose `cross join lateral` used for explicitness, can be [replaced by a single comma](https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-LATERAL) 
 

@@ -26,8 +26,6 @@ from the_table;
 ```
 |tt_id|tt_name|length|width|is_available|weight|created   |
 |-----|-------|------|-----|------------|------|----------|
-|    1|one    |      |     |            |      |          |
-|    2|two    |      |     |            |      |          |
 |    1|one    |   101|  201|false       |  23.5|2023-12-10|
 |    2|two    |   102|  202|true        |  8.72|          |
 |    3|three  |   103|  203|            |      |2024-01-20|  
@@ -79,11 +77,17 @@ from the_table
  cross join lateral jsonb_to_recordset(details) as (x numeric, y numeric, z boolean, more jsonb)
  left  join lateral jsonb_array_elements_text(more['location_ids']) as la(loc) on true
 order by tt_id, weight nulls first;
-```  
-|tt_id|tt_name|length|width|available|weight|created|
-|1|one|101|201|false|23.5|2023-12-10|
-|2|two|102|202|true|8.72||
-|3|three|103|203|||2024-01-20|  
+```
+  
+|tt_id|tt_name|length|width|available         |weight|created   |loc|
+|    1|one    |   103|  203|Do not count on it|      |2024-01-20|   |
+|    1|one    |   102|  202|Yes               |  8.72|          |   |
+|    1|one    |   101|  201|Unfortunately not |  23.5|2023-12-10|   |
+|    2|two    |   113|  233|Do not count on it|      |2024-01-21|   |
+|    2|two    |   112|  212|Unfortunately not | 18.72|          | 91|
+|    2|two    |   112|  212|Unfortunately not | 18.72|          | 92|
+|    2|two    |   112|  212|Unfortunately not | 18.72|          | 93|
+|    2|two    |   111|  211|Yes               | 123.5|2023-12-11|   |
 
 > [!NOTE]
 > Arrow syntax (`object->'attribute'`, `object->>'attribute'`) for versions prior to PG14 or as a matter of personal taste;  

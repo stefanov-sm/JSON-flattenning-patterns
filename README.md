@@ -1,4 +1,4 @@
-# PostgreSQL JSONB flattenning
+# PostgreSQL JSONB flattening
 ### JSONB [substripting](https://www.postgresql.org/docs/current/datatype-json.html#JSONB-SUBSCRIPTING) (PG14+) syntax ###  
 > [!NOTE]
 > [Arrow syntax](https://www.postgresql.org/docs/current/functions-json.html#FUNCTIONS-JSON-PROCESSING) (`object->'attribute'`, `object->>'attribute'`) for versions prior to PG14 or as a matter of personal taste  

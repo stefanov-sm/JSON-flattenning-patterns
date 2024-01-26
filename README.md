@@ -1,4 +1,4 @@
-# PostgreSQL JSON flattenning
+# PostgreSQL JSONB flattenning
 ### JSONB [substripting](https://www.postgresql.org/docs/current/datatype-json.html#JSONB-SUBSCRIPTING) (PG14+) syntax ###  
 > [!NOTE]
 > Arrow syntax (`object->'attribute'`, `object->>'attribute'`) for versions prior to PG14 or as a matter of personal taste  
@@ -57,7 +57,7 @@ select id,
        end as available,
        jdata['more']['weight']::numeric as weight,
        jdata['more']['even_more']['created']::text::date as created,
-       loc::integer
+       loc::integer as loc_id
 from the_table 
  cross join lateral jsonb_array_elements(details) as jdata
  left  join lateral jsonb_array_elements_text(jdata['more']['location_ids']) as l(loc) on true
@@ -74,14 +74,14 @@ select id,
        end as available,
        more['weight']::numeric as weight,
        more['even_more']['created']::text::date as created,
-       loc::integer
+       loc::integer as loc_id
 from the_table 
  cross join lateral jsonb_to_recordset(details) as (x numeric, y numeric, z boolean, more jsonb)
  left  join lateral jsonb_array_elements_text(more['location_ids']) as l(loc) on true
 order by id, weight nulls first;
 ```
   
-|id|name|length|width|available         |weight|created   |loc|
+|id|name|length|width|available         |weight|created   |loc_id|
 |-|-|-|-|-|-|-|-|
 |    1|one    |   103|  203|Do not count on it|      |2024-01-20|   |
 |    1|one    |   102|  202|Yes               |  8.72|          |   |

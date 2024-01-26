@@ -15,7 +15,7 @@ create table the_table (
 insert into the_table 
 values
 (1, 'one',   '{"x":101, "y":201, "z":false, "more":{"weight":23.5, "created":"2023-12-10"}}'),
-(2, 'two',   '{"x":102, "y":202, "z":true,  "more":{"weight":8.72}}'),
+(2, 'two',   '{"x":102, "y":202, "z":true, "more":{"weight":8.72}}'),
 (3, 'three', '{"x":103, "y":203, "more":{"created":"2024-01-20"}}');
 ```
 * **Using select list expressions only**
@@ -58,11 +58,11 @@ truncate the_table;
 insert into the_table 
 values
 (1, 'one', '[{"x":101, "y":201, "z":false, "more":{"weight":23.5, "even_more":{"created":"2023-12-10"}}},
-             {"x":102, "y":202, "z":true,  "more":{"weight":8.72}},
+             {"x":102, "y":202, "z":true, "more":{"weight":8.72}},
              {"x":103, "y":203, "more":{"even_more":{"created":"2024-01-20"}}}]'
 ),
 (2, 'two', '[{"x":111, "y":211, "z":true, "more":{"weight":123.5, "even_more":{"created":"2023-12-11"}}},
-             {"x":112, "y":212, "z":false,  "more":{"weight":18.72, "location_ids":[91, 92, 93]}},
+             {"x":112, "y":212, "z":false, "more":{"weight":18.72, "location_ids":[91, 92, 93]}},
              {"x":113, "y":233, "more":{"even_more":{"created":"2024-01-21"}}}]'
 );
 ```

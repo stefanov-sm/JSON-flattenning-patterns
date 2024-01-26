@@ -1,7 +1,7 @@
 # PostgreSQL JSONB flattenning
 ### JSONB [substripting](https://www.postgresql.org/docs/current/datatype-json.html#JSONB-SUBSCRIPTING) (PG14+) syntax ###  
 > [!NOTE]
-> Arrow syntax (`object->'attribute'`, `object->>'attribute'`) for versions prior to PG14 or as a matter of personal taste  
+> [Arrow syntax](https://www.postgresql.org/docs/current/functions-json.html#FUNCTIONS-JSON-PROCESSING) (`object->'attribute'`, `object->>'attribute'`) for versions prior to PG14 or as a matter of personal taste  
 ```sql
 create table the_table (
  id integer,
@@ -9,14 +9,17 @@ create table the_table (
  details jsonb
 );
 ```
-**JSONB object per record**  
+**JSONB object per record**
+------
 ```sql
 insert into the_table 
 values
 (1, 'one',   '{"x":101, "y":201, "z":false, "more":{"weight":23.5, "created":"2023-12-10"}}'),
 (2, 'two',   '{"x":102, "y":202, "z":true,  "more":{"weight":8.72}}'),
 (3, 'three', '{"x":103, "y":203, "more":{"created":"2024-01-20"}}');
-
+```
+* **Using select list expressions only**
+```sql
 select id, 
        name, 
        details['x']::numeric as length, 
@@ -26,6 +29,22 @@ select id,
        details['more']['created']::text::date as created
 from the_table;
 ```
+> [!NOTE]
+> Note the cast of jsonb `details['more']['created']` first to text and then to date as a cast of jsonb to date does not exist.
+> `details->'more'->>'created'` is text and can be cast to date directly.
+
+* **Using JSONB_TO_RECORD**
+```sql
+select id, 
+       name,
+       j.x as length,
+       j.y as width,
+       j.z as is_available,
+       j.more['weight']::numeric as weight,
+       j.more['created']::text::date as created
+from the_table
+ cross join lateral jsonb_to_record(details) as j(x numeric, y numeric, z boolean, more jsonb);
+```
 |id|name|length|width|is_available|weight|created   |
 |--|----|------|-----|------------|------|----------|
 |    1|one    |   101|  201|false       |  23.5|2023-12-10|
@@ -33,6 +52,7 @@ from the_table;
 |    3|three  |   103|  203|            |      |2024-01-20|  
     
 **JSONB array per record**
+------
 ```sql
 truncate the_table;
 insert into the_table 
@@ -93,5 +113,5 @@ order by id, weight nulls first;
 |    2|two    |   111|  211|Yes               | 123.5|2023-12-11|   |
 
 > [!NOTE]
-> Verbose `cross join lateral` used for explicitness, can be [replaced by a single comma](https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-LATERAL) 
+> Verbose `cross join lateral` used for explicitness, can be [replaced by a comma](https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-LATERAL) 
 

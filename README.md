@@ -1,5 +1,5 @@
 # PostgreSQL JSON flattenning
-### Using JSONB [substripting](https://www.postgresql.org/docs/current/datatype-json.html#JSONB-SUBSCRIPTING) (PG14+) syntax ###  
+### JSONB [substripting](https://www.postgresql.org/docs/current/datatype-json.html#JSONB-SUBSCRIPTING) (PG14+) syntax ###  
 ```sql
 create table the_table (
  tt_id integer,
@@ -58,7 +58,7 @@ select tt_id,
        loc::integer
 from the_table 
  cross join lateral jsonb_array_elements(details) as jdata
- left  join lateral jsonb_array_elements_text(jdata['more']['location_ids']) as la(loc) on true
+ left  join lateral jsonb_array_elements_text(jdata['more']['location_ids']) as l(loc) on true
 order by tt_id, weight nulls first;
 ```
 * **Using JSONB_TO_RECORDSET**
@@ -75,11 +75,12 @@ select tt_id,
        loc::integer
 from the_table 
  cross join lateral jsonb_to_recordset(details) as (x numeric, y numeric, z boolean, more jsonb)
- left  join lateral jsonb_array_elements_text(more['location_ids']) as la(loc) on true
+ left  join lateral jsonb_array_elements_text(more['location_ids']) as l(loc) on true
 order by tt_id, weight nulls first;
 ```
   
 |tt_id|tt_name|length|width|available         |weight|created   |loc|
+|-|-|-|-|-|-|-|-|
 |    1|one    |   103|  203|Do not count on it|      |2024-01-20|   |
 |    1|one    |   102|  202|Yes               |  8.72|          |   |
 |    1|one    |   101|  201|Unfortunately not |  23.5|2023-12-10|   |
@@ -90,6 +91,7 @@ order by tt_id, weight nulls first;
 |    2|two    |   111|  211|Yes               | 123.5|2023-12-11|   |
 
 > [!NOTE]
+> 
 > Arrow syntax (`object->'attribute'`, `object->>'attribute'`) for versions prior to PG14 or as a matter of personal taste;  
 > Verbose `cross join lateral` used for explicitness, can be [replaced by a single comma](https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-LATERAL). 
 

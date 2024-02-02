@@ -51,7 +51,7 @@ from the_table
 |    2|two    |   102|  202|true        |  8.72|          |
 |    3|three  |   103|  203|            |      |2024-01-20|  
     
-**JSONB array per record**
+**Deeply nested data. JSONB array per record**
 ------
 ```sql
 truncate the_table;
